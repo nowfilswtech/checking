@@ -1,0 +1,55 @@
+CREATE POLICY ID(A1-Mediator)
+----------------------------
+curl -v --location --request PUT "http://10.122.162.21:30320/a1-p/policytypes/{ID}"             --header "Content-Type: application/json"             --data '{
+                  "name": "tsapolicy145",
+                  "description": "tsa handover",
+                  "policy_type_id": {ID},
+                  "create_schema": {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "type": "object",
+                    "properties": {
+                      "threshold": {
+                        "type": "integer",
+                        "default": 5
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                }'
+__________________________________________________________________________________________________________________
+
+CREATE POLICY INSTANCE(Policy Manager) (update api)
+----------------------------
+curl -v --location --request PUT 'http://10.97.214.242:9080/a1-policy/v2/policies' \
+--header 'Content-Type: application/json' \
+--data '{
+  "ric_id": "a1-mediator-test",
+  "policy_id": "tsapolicy145",
+  "transient": false,
+  "service_id": "",
+  "policy_data": {
+      "threshold" : 9
+    },
+  "status_notification_uri": "",
+  "policytype_id": "20025"
+}'
+
+__________________________________________________________________________________________________________________
+
+GET POLICY TYPES(Policy manager)
+----------------------------
+curl -v --location 'http://10.97.214.242:9080/a1-policy/v2/rics' \
+--header 'Content-Type: application/json'
+__________________________________________________________________________________________________________________
+
+DELETE POLICY ID(A1-Mediator)
+----------------------------
+curl -v -X DELETE "http://10.122.162.21:30320/a1-p/policytypes/{ID}
+__________________________________________________________________________________________________________________
+
+DELETE POLICY Isntance(Policy Manager)
+----------------------------
+curl -v --location --request DELETE 'http://10.97.214.242:9080/a1-policy/v2/policies/{POLICY_NAME}' \--header 'Content-Type: application/json'
+
+__________________________________________________________________________________________________________________
+
